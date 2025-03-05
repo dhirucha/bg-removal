@@ -1,14 +1,15 @@
 import { createContext, useState } from "react";
 import {useAuth} from '@clerk/clerk-react'
 import axios from 'axios'
+import {toast} from 'react-toastify'
 
-const AppContext = createContext()
+export const AppContext = createContext()
 
 const AppContextProvider = (props) =>{
 
     const [credit, setCredit] = useState(false)
 
-    const backendUrl = import.meta.env.VITE_BACKEND_URL 
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
 
     const {getToken} = useAuth()
 
@@ -21,15 +22,20 @@ const AppContextProvider = (props) =>{
 
             if(data.success){
                 setCredit(data.credits)
+                console.log(data.credits)
             }
             
         } catch (error) {
             console.log(error)
+            toast.error(error.message)
+            
         }
     }
 
     const value = {
-
+        credit, setCredit,
+        loadCreditsData,
+        backendUrl
     }
 
     return (
