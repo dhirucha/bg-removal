@@ -26,6 +26,22 @@ const BuyCredit = () => {
       receipt: order.receipt,
       handler: async (response) => {
         console.log(response)
+
+        const token = await getToken()
+
+        try {
+
+          const {data} = await axios.post(backendUrl+'/api/user/verify-razor',response,{headers:{token}})
+          if(data.success){
+            loadCreditsData()
+            navigate('/')
+            toast.success('Credit added')
+          }
+          
+        } catch (error) {
+          console.log(error)
+          toast.error(error.message)
+        }
       }
     }
 
@@ -41,6 +57,8 @@ const BuyCredit = () => {
       const { data } = await axios.post(backendUrl + '/api/user/pay-razor', {planId},{headers:{token}})
       if(data.success){
         initPay(data.order)
+        console.log("Order object:", order);
+
       }
       
     } catch (error) {
